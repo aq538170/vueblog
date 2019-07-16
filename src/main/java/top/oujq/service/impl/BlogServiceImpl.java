@@ -41,21 +41,35 @@ public class BlogServiceImpl implements BlogService {
         if (null == blogId){
             return null;
         }
-        Blog blog = blogRepository.getOne(blogId);
+
+        Blog blog = new Blog();
         Author author = new Author();
-        if (null != blog.getAuthorId()){
-            author = authorRepository.getOne(blog.getAuthorId());
-        }
+        List<Category> categoryList = new ArrayList<>();
+        try{
+            blog = blogRepository.getOne(blogId);
 
-        List<BlogCategory> blogCategoryList = blogCategoryRepository.findBlogCategoriesByBlogId(blogId);
-        Set<Integer> set = new HashSet<>();
-        if (blogCategoryList.size() != 0){
-            for (BlogCategory blogCategory : blogCategoryList){
-                set.add(blogCategory.getCategoryId());
+            System.out.println(blog.getAuthorId());
+
+            if (null != blog.getAuthorId()){
+                author = authorRepository.getOne(blog.getAuthorId());
             }
+
+            List<BlogCategory> blogCategoryList = blogCategoryRepository.findBlogCategoriesByBlogId(blogId);
+            Set<Integer> set = new HashSet<>();
+            if (blogCategoryList.size() != 0){
+                for (BlogCategory blogCategory : blogCategoryList){
+                    set.add(blogCategory.getCategoryId());
+                }
+            }
+
+            categoryList = categoryRepository.findCategoriesByCategoryIdIn(set);
+        } catch (Exception e){
+
+            e.printStackTrace();
+
+            return null;
         }
 
-        List<Category> categoryList = categoryRepository.findCategoriesByCategoryIdIn(set);
 
         BlogDTO blogDTO = new BlogDTO();
         BeanUtils.copyProperties(blog, blogDTO);

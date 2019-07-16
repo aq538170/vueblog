@@ -32,7 +32,8 @@ public class AuthorRepositoryTest {
 //        List<Author> list = repository.findAll();
 //        Assert.assertNotEquals(0,list.size());
 
-        Author author = repository.getOne(6);
+        Author author = repository.getOne(33);
+        author.setAuthorId(6);
         author.setAuthorName("蝴蝶蓝");
         Author result = repository.save(author);
         Assert.assertEquals("蝴蝶蓝", result.getAuthorName());
